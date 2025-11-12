@@ -1,0 +1,54 @@
+[0.157s] Invoking command in '/home/emersonmt/topics_ws/build/realsense_gazebo_plugin': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/emersonmt/dev_ws/install/uf_ros_lib:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/emersonmt/topics_ws/src/xarm_ros2/thirdparty/realsense_gazebo_plugin -DCMAKE_INSTALL_PREFIX=/home/emersonmt/topics_ws/install/realsense_gazebo_plugin
+[0.201s] -- The C compiler identification is GNU 13.3.0
+[0.245s] -- The CXX compiler identification is GNU 13.3.0
+[0.259s] -- Detecting C compiler ABI info
+[0.344s] -- Detecting C compiler ABI info - done
+[0.350s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.350s] -- Detecting C compile features
+[0.350s] -- Detecting C compile features - done
+[0.358s] -- Detecting CXX compiler ABI info
+[0.450s] -- Detecting CXX compiler ABI info - done
+[0.456s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.456s] -- Detecting CXX compile features
+[0.456s] -- Detecting CXX compile features - done
+[0.460s] -- Found ament_cmake: 2.5.4 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.585s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.692s] -- Found rclcpp: 28.1.11 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.756s] -- Found rosidl_generator_c: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.781s] -- Found rosidl_generator_cpp: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.816s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.847s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.992s] -- Found rmw_implementation_cmake: 7.3.2 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.999s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[1.177s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[1.213s] -- Found FastRTPS: /opt/ros/foxy/include (Required is at least version "2.13") 
+[1.243s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.378s] -- Found ament_lint_auto: 0.17.3 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[1.562s] -- Configuring done (1.4s)
+[1.568s] -- Generating done (0.0s)
+[1.571s] -- Build files have been written to: /home/emersonmt/topics_ws/build/realsense_gazebo_plugin
+[1.601s] Invoked command in '/home/emersonmt/topics_ws/build/realsense_gazebo_plugin' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/emersonmt/dev_ws/install/uf_ros_lib:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/emersonmt/topics_ws/src/xarm_ros2/thirdparty/realsense_gazebo_plugin -DCMAKE_INSTALL_PREFIX=/home/emersonmt/topics_ws/install/realsense_gazebo_plugin
+[1.606s] Invoking command in '/home/emersonmt/topics_ws/build/realsense_gazebo_plugin': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/emersonmt/dev_ws/install/uf_ros_lib:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/emersonmt/topics_ws/build/realsense_gazebo_plugin -- -j16 -l16
+[1.685s] Invoked command in '/home/emersonmt/topics_ws/build/realsense_gazebo_plugin' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/emersonmt/dev_ws/install/uf_ros_lib:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/emersonmt/topics_ws/build/realsense_gazebo_plugin -- -j16 -l16
+[1.686s] Invoking command in '/home/emersonmt/topics_ws/build/realsense_gazebo_plugin': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/emersonmt/dev_ws/install/uf_ros_lib:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/emersonmt/topics_ws/build/realsense_gazebo_plugin
+[1.701s] -- Install configuration: ""
+[1.702s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/environment/library_path.sh
+[1.702s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/environment/library_path.dsv
+[1.702s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/ament_index/resource_index/package_run_dependencies/realsense_gazebo_plugin
+[1.702s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/ament_index/resource_index/parent_prefix_path/realsense_gazebo_plugin
+[1.702s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/environment/ament_prefix_path.sh
+[1.702s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/environment/ament_prefix_path.dsv
+[1.703s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/environment/path.sh
+[1.703s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/environment/path.dsv
+[1.703s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/local_setup.bash
+[1.703s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/local_setup.sh
+[1.704s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/local_setup.zsh
+[1.704s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/local_setup.dsv
+[1.704s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/package.dsv
+[1.704s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/ament_index/resource_index/packages/realsense_gazebo_plugin
+[1.704s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/cmake/ament_cmake_export_include_directories-extras.cmake
+[1.704s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/cmake/ament_cmake_export_libraries-extras.cmake
+[1.704s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/cmake/realsense_gazebo_pluginConfig.cmake
+[1.707s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/cmake/realsense_gazebo_pluginConfig-version.cmake
+[1.708s] -- Installing: /home/emersonmt/topics_ws/install/realsense_gazebo_plugin/share/realsense_gazebo_plugin/package.xml
+[1.709s] Invoked command in '/home/emersonmt/topics_ws/build/realsense_gazebo_plugin' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/emersonmt/dev_ws/install/uf_ros_lib:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/emersonmt/topics_ws/build/realsense_gazebo_plugin

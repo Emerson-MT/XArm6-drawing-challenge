@@ -1,0 +1,37 @@
+[0.680s] Invoking command in '/home/emersonmt/topics_ws/src/xarm_gui': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/emersonmt/topics_ws/build/xarm_gui/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/xarm_gui build --build-base /home/emersonmt/topics_ws/build/xarm_gui/build install --record /home/emersonmt/topics_ws/build/xarm_gui/install.log --single-version-externally-managed install_data
+[0.839s] running egg_info
+[0.839s] creating ../../build/xarm_gui/xarm_gui.egg-info
+[0.851s] writing ../../build/xarm_gui/xarm_gui.egg-info/PKG-INFO
+[0.851s] writing dependency_links to ../../build/xarm_gui/xarm_gui.egg-info/dependency_links.txt
+[0.851s] writing entry points to ../../build/xarm_gui/xarm_gui.egg-info/entry_points.txt
+[0.851s] writing requirements to ../../build/xarm_gui/xarm_gui.egg-info/requires.txt
+[0.851s] writing top-level names to ../../build/xarm_gui/xarm_gui.egg-info/top_level.txt
+[0.851s] writing manifest file '../../build/xarm_gui/xarm_gui.egg-info/SOURCES.txt'
+[0.875s] reading manifest file '../../build/xarm_gui/xarm_gui.egg-info/SOURCES.txt'
+[0.875s] writing manifest file '../../build/xarm_gui/xarm_gui.egg-info/SOURCES.txt'
+[0.876s] running build
+[0.876s] running build_py
+[0.876s] creating /home/emersonmt/topics_ws/build/xarm_gui/build
+[0.876s] creating /home/emersonmt/topics_ws/build/xarm_gui/build/lib
+[0.876s] creating /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui
+[0.876s] copying xarm_gui/gui_pose_publisher.py -> /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui
+[0.876s] copying xarm_gui/__init__.py -> /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui
+[0.876s] running install
+[0.881s] running install_lib
+[0.893s] creating /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui
+[0.893s] copying /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui/gui_pose_publisher.py -> /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui
+[0.894s] copying /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui/__init__.py -> /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui
+[0.894s] byte-compiling /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui/gui_pose_publisher.py to gui_pose_publisher.cpython-312.pyc
+[0.895s] byte-compiling /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui/__init__.py to __init__.cpython-312.pyc
+[0.895s] running install_data
+[0.896s] creating /home/emersonmt/topics_ws/install/xarm_gui/share/ament_index
+[0.896s] creating /home/emersonmt/topics_ws/install/xarm_gui/share/ament_index/resource_index
+[0.896s] creating /home/emersonmt/topics_ws/install/xarm_gui/share/ament_index/resource_index/packages
+[0.896s] copying resource/xarm_gui -> /home/emersonmt/topics_ws/install/xarm_gui/share/ament_index/resource_index/packages
+[0.896s] copying package.xml -> /home/emersonmt/topics_ws/install/xarm_gui/share/xarm_gui
+[0.896s] running install_egg_info
+[0.909s] Copying ../../build/xarm_gui/xarm_gui.egg-info to /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui-0.0.0-py3.12.egg-info
+[0.910s] running install_scripts
+[1.000s] Installing gui_pose_publisher script to /home/emersonmt/topics_ws/install/xarm_gui/lib/xarm_gui
+[1.000s] writing list of installed files to '/home/emersonmt/topics_ws/build/xarm_gui/install.log'
+[1.047s] Invoked command in '/home/emersonmt/topics_ws/src/xarm_gui' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/emersonmt/topics_ws/build/xarm_gui/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/xarm_gui build --build-base /home/emersonmt/topics_ws/build/xarm_gui/build install --record /home/emersonmt/topics_ws/build/xarm_gui/install.log --single-version-externally-managed install_data

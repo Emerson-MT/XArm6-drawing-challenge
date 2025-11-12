@@ -1,0 +1,35 @@
+running egg_info
+creating ../../build/xarm_gui/xarm_gui.egg-info
+writing ../../build/xarm_gui/xarm_gui.egg-info/PKG-INFO
+writing dependency_links to ../../build/xarm_gui/xarm_gui.egg-info/dependency_links.txt
+writing entry points to ../../build/xarm_gui/xarm_gui.egg-info/entry_points.txt
+writing requirements to ../../build/xarm_gui/xarm_gui.egg-info/requires.txt
+writing top-level names to ../../build/xarm_gui/xarm_gui.egg-info/top_level.txt
+writing manifest file '../../build/xarm_gui/xarm_gui.egg-info/SOURCES.txt'
+reading manifest file '../../build/xarm_gui/xarm_gui.egg-info/SOURCES.txt'
+writing manifest file '../../build/xarm_gui/xarm_gui.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/emersonmt/topics_ws/build/xarm_gui/build
+creating /home/emersonmt/topics_ws/build/xarm_gui/build/lib
+creating /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui
+copying xarm_gui/gui_pose_publisher.py -> /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui
+copying xarm_gui/__init__.py -> /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui
+running install
+running install_lib
+creating /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui
+copying /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui/gui_pose_publisher.py -> /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui
+copying /home/emersonmt/topics_ws/build/xarm_gui/build/lib/xarm_gui/__init__.py -> /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui
+byte-compiling /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui/gui_pose_publisher.py to gui_pose_publisher.cpython-312.pyc
+byte-compiling /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui/__init__.py to __init__.cpython-312.pyc
+running install_data
+creating /home/emersonmt/topics_ws/install/xarm_gui/share/ament_index
+creating /home/emersonmt/topics_ws/install/xarm_gui/share/ament_index/resource_index
+creating /home/emersonmt/topics_ws/install/xarm_gui/share/ament_index/resource_index/packages
+copying resource/xarm_gui -> /home/emersonmt/topics_ws/install/xarm_gui/share/ament_index/resource_index/packages
+copying package.xml -> /home/emersonmt/topics_ws/install/xarm_gui/share/xarm_gui
+running install_egg_info
+Copying ../../build/xarm_gui/xarm_gui.egg-info to /home/emersonmt/topics_ws/install/xarm_gui/lib/python3.12/site-packages/xarm_gui-0.0.0-py3.12.egg-info
+running install_scripts
+Installing gui_pose_publisher script to /home/emersonmt/topics_ws/install/xarm_gui/lib/xarm_gui
+writing list of installed files to '/home/emersonmt/topics_ws/build/xarm_gui/install.log'

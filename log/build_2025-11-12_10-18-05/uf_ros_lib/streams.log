@@ -1,0 +1,61 @@
+[0.512s] Invoking command in '/home/emersonmt/topics_ws/src/xarm_ros2/uf_ros_lib': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/emersonmt/topics_ws/build/uf_ros_lib/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/uf_ros_lib build --build-base /home/emersonmt/topics_ws/build/uf_ros_lib/build install --record /home/emersonmt/topics_ws/build/uf_ros_lib/install.log --single-version-externally-managed install_data
+[0.664s] running egg_info
+[0.664s] creating ../../../build/uf_ros_lib/uf_ros_lib.egg-info
+[0.674s] writing ../../../build/uf_ros_lib/uf_ros_lib.egg-info/PKG-INFO
+[0.674s] writing dependency_links to ../../../build/uf_ros_lib/uf_ros_lib.egg-info/dependency_links.txt
+[0.674s] writing requirements to ../../../build/uf_ros_lib/uf_ros_lib.egg-info/requires.txt
+[0.674s] writing top-level names to ../../../build/uf_ros_lib/uf_ros_lib.egg-info/top_level.txt
+[0.674s] writing manifest file '../../../build/uf_ros_lib/uf_ros_lib.egg-info/SOURCES.txt'
+[0.697s] reading manifest file '../../../build/uf_ros_lib/uf_ros_lib.egg-info/SOURCES.txt'
+[0.698s] writing manifest file '../../../build/uf_ros_lib/uf_ros_lib.egg-info/SOURCES.txt'
+[0.698s] running build
+[0.698s] running build_py
+[0.698s] creating /home/emersonmt/topics_ws/build/uf_ros_lib/build
+[0.699s] creating /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib
+[0.699s] creating /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib
+[0.699s] copying uf_ros_lib/moveit_configs_builder.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib
+[0.699s] copying uf_ros_lib/__init__.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib
+[0.699s] copying uf_ros_lib/uf_robot_utils.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib
+[0.699s] copying uf_ros_lib/parameter_descriptions.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib
+[0.699s] creating /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions
+[0.699s] copying uf_ros_lib/substitutions/planning_pipelines.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions
+[0.699s] copying uf_ros_lib/substitutions/joint_limits.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions
+[0.699s] copying uf_ros_lib/substitutions/common.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions
+[0.699s] copying uf_ros_lib/substitutions/__init__.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions
+[0.699s] copying uf_ros_lib/substitutions/controllers.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions
+[0.699s] copying uf_ros_lib/substitutions/kinematics.py -> /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions
+[0.699s] running install
+[0.703s] running install_lib
+[0.722s] creating /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib
+[0.722s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/moveit_configs_builder.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib
+[0.722s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/__init__.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib
+[0.723s] creating /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions
+[0.723s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions/planning_pipelines.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions
+[0.724s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions/joint_limits.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions
+[0.724s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions/common.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions
+[0.725s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions/__init__.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions
+[0.725s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions/controllers.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions
+[0.725s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/substitutions/kinematics.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions
+[0.726s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/uf_robot_utils.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib
+[0.728s] copying /home/emersonmt/topics_ws/build/uf_ros_lib/build/lib/uf_ros_lib/parameter_descriptions.py -> /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib
+[0.729s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/moveit_configs_builder.py to moveit_configs_builder.cpython-312.pyc
+[0.738s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/__init__.py to __init__.cpython-312.pyc
+[0.738s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions/planning_pipelines.py to planning_pipelines.cpython-312.pyc
+[0.740s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions/joint_limits.py to joint_limits.cpython-312.pyc
+[0.742s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions/common.py to common.cpython-312.pyc
+[0.743s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions/__init__.py to __init__.cpython-312.pyc
+[0.743s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions/controllers.py to controllers.cpython-312.pyc
+[0.745s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/substitutions/kinematics.py to kinematics.cpython-312.pyc
+[0.746s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/uf_robot_utils.py to uf_robot_utils.cpython-312.pyc
+[0.750s] byte-compiling /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib/parameter_descriptions.py to parameter_descriptions.cpython-312.pyc
+[0.750s] running install_data
+[0.750s] creating /home/emersonmt/topics_ws/install/uf_ros_lib/share/ament_index
+[0.750s] creating /home/emersonmt/topics_ws/install/uf_ros_lib/share/ament_index/resource_index
+[0.750s] creating /home/emersonmt/topics_ws/install/uf_ros_lib/share/ament_index/resource_index/packages
+[0.750s] copying resource/uf_ros_lib -> /home/emersonmt/topics_ws/install/uf_ros_lib/share/ament_index/resource_index/packages
+[0.750s] copying package.xml -> /home/emersonmt/topics_ws/install/uf_ros_lib/share/uf_ros_lib
+[0.750s] running install_egg_info
+[0.773s] Copying ../../../build/uf_ros_lib/uf_ros_lib.egg-info to /home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages/uf_ros_lib-0.0.0-py3.12.egg-info
+[0.774s] running install_scripts
+[0.925s] writing list of installed files to '/home/emersonmt/topics_ws/build/uf_ros_lib/install.log'
+[1.000s] Invoked command in '/home/emersonmt/topics_ws/src/xarm_ros2/uf_ros_lib' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/emersonmt/topics_ws/build/uf_ros_lib/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/emersonmt/topics_ws/install/uf_ros_lib/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/uf_ros_lib build --build-base /home/emersonmt/topics_ws/build/uf_ros_lib/build install --record /home/emersonmt/topics_ws/build/uf_ros_lib/install.log --single-version-externally-managed install_data

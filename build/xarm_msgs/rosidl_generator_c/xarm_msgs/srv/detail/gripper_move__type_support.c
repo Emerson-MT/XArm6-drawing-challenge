@@ -5,9 +5,9 @@
 #include <string.h>
 
 #include "rosidl_typesupport_interface/macros.h"
+#include "xarm_msgs/srv/detail/gripper_move__struct.h"
 #include "xarm_msgs/srv/detail/gripper_move__type_support.h"
 #include "xarm_msgs/srv/detail/gripper_move__functions.h"
-#include "xarm_msgs/srv/detail/gripper_move__struct.h"
 
 #ifdef __cplusplus
 extern "C"

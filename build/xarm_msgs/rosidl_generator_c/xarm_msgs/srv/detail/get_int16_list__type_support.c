@@ -6,8 +6,8 @@
 
 #include "rosidl_typesupport_interface/macros.h"
 #include "xarm_msgs/srv/detail/get_int16_list__struct.h"
-#include "xarm_msgs/srv/detail/get_int16_list__functions.h"
 #include "xarm_msgs/srv/detail/get_int16_list__type_support.h"
+#include "xarm_msgs/srv/detail/get_int16_list__functions.h"
 
 #ifdef __cplusplus
 extern "C"

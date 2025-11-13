@@ -6,8 +6,8 @@
 
 #include "rosidl_typesupport_interface/macros.h"
 #include "xarm_msgs/srv/detail/linear_motor_back_origin__functions.h"
-#include "xarm_msgs/srv/detail/linear_motor_back_origin__type_support.h"
 #include "xarm_msgs/srv/detail/linear_motor_back_origin__struct.h"
+#include "xarm_msgs/srv/detail/linear_motor_back_origin__type_support.h"
 
 #ifdef __cplusplus
 extern "C"

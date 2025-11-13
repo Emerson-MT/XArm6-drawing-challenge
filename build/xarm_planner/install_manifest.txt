@@ -10,6 +10,7 @@
 /home/emersonmt/topics_ws/install/xarm_planner/lib/xarm_planner/test_xarm_planner_client_pose
 /home/emersonmt/topics_ws/install/xarm_planner/lib/xarm_planner/test_xarm_gripper_planner_client_joint
 /home/emersonmt/topics_ws/install/xarm_planner/lib/xarm_planner/test_lite_gripper_realmove
+/home/emersonmt/topics_ws/install/xarm_planner/lib/xarm_planner/emer_planner
 /home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/xarm5_planner_fake.launch.py
 /home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/xarm5_planner_gazebo.launch.py
 /home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/uf850_planner_realmove.launch.py
@@ -32,6 +33,7 @@
 /home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/lite6_planner_fake.launch.py
 /home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/lite6_planner_gazebo.launch.py
 /home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/test_move_group.launch.py
+/home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/emer_planner.launch.py
 /home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/test_xarm_planner_client_pose.launch.py
 /home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/test_xarm_gripper_planner_client_joint.launch.py
 /home/emersonmt/topics_ws/install/xarm_planner/share/xarm_planner//launch/test_dual_xarm_planner_api_joint.launch.py

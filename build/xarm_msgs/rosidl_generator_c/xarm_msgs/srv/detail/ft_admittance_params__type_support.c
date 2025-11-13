@@ -5,9 +5,9 @@
 #include <string.h>
 
 #include "rosidl_typesupport_interface/macros.h"
-#include "xarm_msgs/srv/detail/ft_admittance_params__struct.h"
 #include "xarm_msgs/srv/detail/ft_admittance_params__type_support.h"
 #include "xarm_msgs/srv/detail/ft_admittance_params__functions.h"
+#include "xarm_msgs/srv/detail/ft_admittance_params__struct.h"
 
 #ifdef __cplusplus
 extern "C"

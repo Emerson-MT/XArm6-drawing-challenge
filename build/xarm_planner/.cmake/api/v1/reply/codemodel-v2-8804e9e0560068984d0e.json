@@ -1,0 +1,178 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-325fff53f02db93634cc.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "xarm_planner",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "emer_planner::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-emer_planner-dc6e84155f9d45b16bff.json",
+					"name" : "emer_planner",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_dual_xarm_planner_api_joint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_dual_xarm_planner_api_joint-8568f31ef2075923f412.json",
+					"name" : "test_dual_xarm_planner_api_joint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_lite_gripper_realmove::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_lite_gripper_realmove-bffd3fe53cbadf4ec477.json",
+					"name" : "test_lite_gripper_realmove",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_xarm_gripper_planner_api_joint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_xarm_gripper_planner_api_joint-ae94025eefb186235aee.json",
+					"name" : "test_xarm_gripper_planner_api_joint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_xarm_gripper_planner_client_joint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_xarm_gripper_planner_client_joint-a1cf74d982dc9b8cb9a8.json",
+					"name" : "test_xarm_gripper_planner_client_joint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_xarm_planner_api_joint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_xarm_planner_api_joint-e6bf0434e451254ee44e.json",
+					"name" : "test_xarm_planner_api_joint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_xarm_planner_api_pose::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_xarm_planner_api_pose-dcb807708b7d76cf26dc.json",
+					"name" : "test_xarm_planner_api_pose",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_xarm_planner_client_joint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_xarm_planner_client_joint-e46ac8378697e5e14190.json",
+					"name" : "test_xarm_planner_client_joint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_xarm_planner_client_pose::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_xarm_planner_client_pose-f820395b4356a878a57b.json",
+					"name" : "test_xarm_planner_client_pose",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-eeb8cb3f43767ca07818.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "xarm_gripper_planner_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-xarm_gripper_planner_node-fbf57d0dc2b0fb1d7150.json",
+					"name" : "xarm_gripper_planner_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "xarm_planner::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-xarm_planner-d42e95bc212c94990232.json",
+					"name" : "xarm_planner",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "xarm_planner_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-xarm_planner_node-382762fb3dada2d015ef.json",
+					"name" : "xarm_planner_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "xarm_planner_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-xarm_planner_uninstall-31d2c42f80636a717f7f.json",
+					"name" : "xarm_planner_uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/emersonmt/topics_ws/build/xarm_planner",
+		"source" : "/home/emersonmt/topics_ws/src/xarm_ros2/xarm_planner"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

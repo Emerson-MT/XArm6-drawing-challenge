@@ -6,8 +6,8 @@
 
 #include "rosidl_typesupport_interface/macros.h"
 #include "xarm_msgs/srv/detail/get_digital_io__type_support.h"
-#include "xarm_msgs/srv/detail/get_digital_io__functions.h"
 #include "xarm_msgs/srv/detail/get_digital_io__struct.h"
+#include "xarm_msgs/srv/detail/get_digital_io__functions.h"
 
 #ifdef __cplusplus
 extern "C"

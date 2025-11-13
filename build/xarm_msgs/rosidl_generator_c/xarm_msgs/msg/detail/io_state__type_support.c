@@ -5,8 +5,8 @@
 #include <string.h>
 
 #include "rosidl_typesupport_interface/macros.h"
-#include "xarm_msgs/msg/detail/io_state__functions.h"
 #include "xarm_msgs/msg/detail/io_state__type_support.h"
+#include "xarm_msgs/msg/detail/io_state__functions.h"
 #include "xarm_msgs/msg/detail/io_state__struct.h"
 
 #ifdef __cplusplus

@@ -6,8 +6,8 @@
 
 #include "rosidl_typesupport_interface/macros.h"
 #include "xarm_msgs/srv/detail/set_tcp_load__functions.h"
-#include "xarm_msgs/srv/detail/set_tcp_load__struct.h"
 #include "xarm_msgs/srv/detail/set_tcp_load__type_support.h"
+#include "xarm_msgs/srv/detail/set_tcp_load__struct.h"
 
 #ifdef __cplusplus
 extern "C"

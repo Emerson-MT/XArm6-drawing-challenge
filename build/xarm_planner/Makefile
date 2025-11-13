@@ -340,6 +340,19 @@ test_lite_gripper_realmove/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_lite_gripper_realmove.dir/build.make CMakeFiles/test_lite_gripper_realmove.dir/build
 .PHONY : test_lite_gripper_realmove/fast
 
+#=============================================================================
+# Target rules for targets named emer_planner
+
+# Build rule for target.
+emer_planner: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emer_planner
+.PHONY : emer_planner
+
+# fast build rule for target.
+emer_planner/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emer_planner.dir/build.make CMakeFiles/emer_planner.dir/build
+.PHONY : emer_planner/fast
+
 src/xarm_gripper_planner_node.o: src/xarm_gripper_planner_node.cpp.o
 .PHONY : src/xarm_gripper_planner_node.o
 
@@ -411,6 +424,30 @@ src/xarm_planner_node.s: src/xarm_planner_node.cpp.s
 src/xarm_planner_node.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/xarm_planner_node.dir/build.make CMakeFiles/xarm_planner_node.dir/src/xarm_planner_node.cpp.s
 .PHONY : src/xarm_planner_node.cpp.s
+
+test/emer_planner.o: test/emer_planner.cpp.o
+.PHONY : test/emer_planner.o
+
+# target to build an object file
+test/emer_planner.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emer_planner.dir/build.make CMakeFiles/emer_planner.dir/test/emer_planner.cpp.o
+.PHONY : test/emer_planner.cpp.o
+
+test/emer_planner.i: test/emer_planner.cpp.i
+.PHONY : test/emer_planner.i
+
+# target to preprocess a source file
+test/emer_planner.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emer_planner.dir/build.make CMakeFiles/emer_planner.dir/test/emer_planner.cpp.i
+.PHONY : test/emer_planner.cpp.i
+
+test/emer_planner.s: test/emer_planner.cpp.s
+.PHONY : test/emer_planner.s
+
+# target to generate assembly for a file
+test/emer_planner.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/emer_planner.dir/build.make CMakeFiles/emer_planner.dir/test/emer_planner.cpp.s
+.PHONY : test/emer_planner.cpp.s
 
 test/test_dual_xarm_planner_api_joint.o: test/test_dual_xarm_planner_api_joint.cpp.o
 .PHONY : test/test_dual_xarm_planner_api_joint.o
@@ -619,6 +656,7 @@ help:
 	@echo "... test"
 	@echo "... uninstall"
 	@echo "... xarm_planner_uninstall"
+	@echo "... emer_planner"
 	@echo "... test_dual_xarm_planner_api_joint"
 	@echo "... test_lite_gripper_realmove"
 	@echo "... test_xarm_gripper_planner_api_joint"
@@ -639,6 +677,9 @@ help:
 	@echo "... src/xarm_planner_node.o"
 	@echo "... src/xarm_planner_node.i"
 	@echo "... src/xarm_planner_node.s"
+	@echo "... test/emer_planner.o"
+	@echo "... test/emer_planner.i"
+	@echo "... test/emer_planner.s"
 	@echo "... test/test_dual_xarm_planner_api_joint.o"
 	@echo "... test/test_dual_xarm_planner_api_joint.i"
 	@echo "... test/test_dual_xarm_planner_api_joint.s"

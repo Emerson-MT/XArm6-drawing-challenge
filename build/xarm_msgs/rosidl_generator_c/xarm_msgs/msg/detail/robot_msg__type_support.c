@@ -6,8 +6,8 @@
 
 #include "rosidl_typesupport_interface/macros.h"
 #include "xarm_msgs/msg/detail/robot_msg__type_support.h"
-#include "xarm_msgs/msg/detail/robot_msg__functions.h"
 #include "xarm_msgs/msg/detail/robot_msg__struct.h"
+#include "xarm_msgs/msg/detail/robot_msg__functions.h"
 
 #ifdef __cplusplus
 extern "C"

@@ -11,6 +11,7 @@
 /home/emersonmt/topics_ws/build/xarm_planner/CMakeFiles/test_xarm_planner_client_pose.dir
 /home/emersonmt/topics_ws/build/xarm_planner/CMakeFiles/test_xarm_gripper_planner_client_joint.dir
 /home/emersonmt/topics_ws/build/xarm_planner/CMakeFiles/test_lite_gripper_realmove.dir
+/home/emersonmt/topics_ws/build/xarm_planner/CMakeFiles/emer_planner.dir
 /home/emersonmt/topics_ws/build/xarm_planner/CMakeFiles/test.dir
 /home/emersonmt/topics_ws/build/xarm_planner/CMakeFiles/edit_cache.dir
 /home/emersonmt/topics_ws/build/xarm_planner/CMakeFiles/rebuild_cache.dir

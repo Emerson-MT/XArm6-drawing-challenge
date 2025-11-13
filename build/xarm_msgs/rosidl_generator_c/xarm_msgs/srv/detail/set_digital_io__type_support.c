@@ -5,9 +5,9 @@
 #include <string.h>
 
 #include "rosidl_typesupport_interface/macros.h"
-#include "xarm_msgs/srv/detail/set_digital_io__functions.h"
-#include "xarm_msgs/srv/detail/set_digital_io__struct.h"
 #include "xarm_msgs/srv/detail/set_digital_io__type_support.h"
+#include "xarm_msgs/srv/detail/set_digital_io__struct.h"
+#include "xarm_msgs/srv/detail/set_digital_io__functions.h"
 
 #ifdef __cplusplus
 extern "C"

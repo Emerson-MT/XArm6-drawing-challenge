@@ -6,8 +6,8 @@
 
 #include "rosidl_typesupport_interface/macros.h"
 #include "xarm_msgs/srv/detail/bio_gripper_enable__struct.h"
-#include "xarm_msgs/srv/detail/bio_gripper_enable__type_support.h"
 #include "xarm_msgs/srv/detail/bio_gripper_enable__functions.h"
+#include "xarm_msgs/srv/detail/bio_gripper_enable__type_support.h"
 
 #ifdef __cplusplus
 extern "C"

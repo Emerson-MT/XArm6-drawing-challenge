@@ -5,9 +5,9 @@
 #include <string.h>
 
 #include "rosidl_typesupport_interface/macros.h"
-#include "xarm_msgs/srv/detail/iden_load__functions.h"
-#include "xarm_msgs/srv/detail/iden_load__struct.h"
 #include "xarm_msgs/srv/detail/iden_load__type_support.h"
+#include "xarm_msgs/srv/detail/iden_load__struct.h"
+#include "xarm_msgs/srv/detail/iden_load__functions.h"
 
 #ifdef __cplusplus
 extern "C"

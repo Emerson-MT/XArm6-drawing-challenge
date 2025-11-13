@@ -1,0 +1,16 @@
+# Archivos de compilación
+build/
+install/
+log/
+
+# Archivos temporales
+*.pyc
+__pycache__/
+*.swp
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos específicos que no quieres subir
+src/xarm_ros2/.vscode/

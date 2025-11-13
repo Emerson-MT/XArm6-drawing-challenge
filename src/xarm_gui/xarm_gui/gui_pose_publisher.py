@@ -8,10 +8,12 @@ from tkinter import ttk
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Pose
+from std_msgs.msg import String   # Para comandos de figuras / parada
+
 
 class RobotPositionControlGrid:
     def __init__(self):
-        '''Constructor - creates the window and widgets'''
+        """Constructor - creates the window and widgets"""
         # Create main window
         self.root = tk.Tk()
         self.root.title("XArm6 - Position and Orientation Control")
@@ -23,10 +25,16 @@ class RobotPositionControlGrid:
         # Create ROS2 publisher node
         rclpy.init(args=None)
         self.node = rclpy.create_node('xarm_gui_node')
-        self.publish = self.node.create_publisher(Pose, '/xarm/target_pose', 10)
+
+        # Publicador de pose
+        self.pose_pub = self.node.create_publisher(Pose, '/xarm/target_pose', 10)
+
+        # Publicador para comandos de forma / parada
+        # Otros nodos solo necesitan suscribirse a este tópico (std_msgs/String)
+        self.shape_cmd_pub = self.node.create_publisher(String, '/xarm/shape_command', 10)
 
     def create_widgets(self):
-        '''Create all GUI elements using GRID layout'''
+        """Create all GUI elements using GRID layout"""
         # Main title
         self.title_label = ttk.Label(
             self.root,
@@ -100,7 +108,7 @@ class RobotPositionControlGrid:
             row=6, column=0, columnspan=3, sticky='ew', pady=15
         )
 
-        # Buttons
+        # ===== Row 3: Botones principales =====
         self.set_position_btn = ttk.Button(
             self.position_frame,
             text="Set Pose",
@@ -114,6 +122,28 @@ class RobotPositionControlGrid:
             command=self.reset_all
         )
         self.reset_btn.grid(row=7, column=2, pady=5, padx=10, sticky='ew')
+
+        # ===== Row 4: Botones de figuras y emergencia =====
+        self.circle_btn = ttk.Button(
+            self.position_frame,
+            text="Draw Circle",
+            command=self.send_circle_command
+        )
+        self.circle_btn.grid(row=8, column=0, pady=8, padx=10, sticky='ew')
+
+        self.square_btn = ttk.Button(
+            self.position_frame,
+            text="Draw Square",
+            command=self.send_square_command
+        )
+        self.square_btn.grid(row=8, column=1, pady=8, padx=10, sticky='ew')
+
+        self.emergency_btn = ttk.Button(
+            self.position_frame,
+            text="Emergency Stop",
+            command=self.send_emergency_stop
+        )
+        self.emergency_btn.grid(row=8, column=2, pady=8, padx=10, sticky='ew')
 
         # Configure column weights for even distribution
         for i in range(3):
@@ -142,17 +172,21 @@ class RobotPositionControlGrid:
         self.status_display.grid(row=1, column=0, columnspan=3, sticky='w', pady=5)
 
     def set_pose(self):
-        '''Handle Set Pose button'''
+        """Handle Set Pose button"""
         try:
             pose_data = {k: float(v.get()) for k, v in self.entries.items()}
             formatted_pose = "\n".join([f"{k}: {v:.3f}" for k, v in pose_data.items()])
-            
+
             # Create Pose type msg
             msg = Pose()
             msg.position.x = pose_data['x']
             msg.position.y = pose_data['y']
             msg.position.z = pose_data['z']
-            #
+            # Yaw, pitch y roll aún no se usan en la orientación
+
+            # PUBLICAR pose al topic
+            self.pose_pub.publish(msg)
+
             self.status_display.config(
                 text=f"Pose set successfully:\n{formatted_pose}",
                 foreground='green'
@@ -164,7 +198,7 @@ class RobotPositionControlGrid:
             )
 
     def reset_all(self):
-        '''Reset all fields'''
+        """Reset all fields"""
         for entry in self.entries.values():
             entry.delete(0, tk.END)
             entry.insert(0, "0.0")
@@ -174,8 +208,43 @@ class RobotPositionControlGrid:
             foreground='blue'
         )
 
+    # ===== MÉTODOS PARA ENVIAR COMANDOS DE TEXTO =====
+    def send_shape_command(self, shape_name: str, status_text: str, color: str):
+        """
+        Helper para enviar comandos de forma al topic /xarm/shape_command.
+        shape_name es un string sencillo que otros nodos podrán leer.
+        """
+        msg = String()
+        msg.data = shape_name
+        self.shape_cmd_pub.publish(msg)
+        self.status_display.config(text=status_text, foreground=color)
+
+    def send_circle_command(self):
+        """Enviar comando para que el robot dibuje un círculo"""
+        self.send_shape_command(
+            shape_name="circle",          # <--- string publicado
+            status_text="Command sent: circle",
+            color='purple'
+        )
+
+    def send_square_command(self):
+        """Enviar comando para que el robot dibuje un cuadrado"""
+        self.send_shape_command(
+            shape_name="square",          # <--- string publicado
+            status_text="Command sent: square",
+            color='purple'
+        )
+
+    def send_emergency_stop(self):
+        """Enviar comando de parada de emergencia"""
+        self.send_shape_command(
+            shape_name="stop",            # <--- string publicado
+            status_text="EMERGENCY STOP sent to robot! (stop)",
+            color='red'
+        )
+
     def run(self):
-        '''Start the application'''
+        """Start the application"""
         self.root.mainloop()
 
 

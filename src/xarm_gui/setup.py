@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'gui_pose_publisher = xarm_gui.gui_pose_publisher:main',
+            'shape_command_executor = xarm_gui.suscriptor_interfaz:main',
         ],
     },
 )

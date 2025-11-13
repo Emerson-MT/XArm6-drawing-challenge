@@ -1,2 +1,0 @@
-[console_scripts]
-gui_pose_publisher = xarm_gui.gui_pose_publisher:main

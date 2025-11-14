@@ -23,6 +23,8 @@
 #include <xarm_msgs/srv/plan_joint.hpp>
 #include <xarm_msgs/srv/plan_exec.hpp>
 #include <xarm_msgs/srv/plan_single_straight.hpp>
+#include <std_srvs/srv/trigger.hpp>
+
 
 
 namespace xarm_planner
@@ -40,6 +42,9 @@ namespace xarm_planner
         bool planCartesianPath(const std::vector<geometry_msgs::msg::Pose>& pose_target_vector);
 
         bool executePath(bool wait = true);
+
+        void stopRobot();
+
     private:
         void init(const std::string& group_name);
 

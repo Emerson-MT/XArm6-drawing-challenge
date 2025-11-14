@@ -4,93 +4,203 @@
  *
  * Author: Vinman <vinman.cub@gmail.com>
  ============================================================================*/
- 
+
 #include "xarm_planner/xarm_planner.h"
+
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp> // para tf2::toMsg
+
+#include <cmath>
+#include <memory>
+#include <vector>
+#include <functional>
+#include <string>
+#include <utility>
+
+#include <rclcpp/rclcpp.hpp>
+#include <std_msgs/msg/string.hpp>
+
+#include "xarm_msgs/srv/set_int16.hpp"
+
+// Función para crear target pose a partir de posición y orientación RPY
+geometry_msgs::msg::Pose create_target_pose(double x, double y, double z,
+                                            double roll, double pitch, double yaw)
+{
+    geometry_msgs::msg::Pose target_pose;
+
+    // Crear quaternion a partir de roll, pitch y yaw
+    tf2::Quaternion q;
+    q.setRPY(roll, pitch, yaw);
+    q.normalize();
+
+    // Asignar orientación convertida a mensaje ROS 2
+    target_pose.orientation = tf2::toMsg(q);
+
+    // Asignar posición
+    target_pose.position.x = x;
+    target_pose.position.y = y;
+    target_pose.position.z = z;
+
+    return target_pose;
+}
 
 void exit_sig_handler(int signum)
 {
-    fprintf(stderr, "[test_xarm_planner_api_pose] Ctrl-C caught, exit process...\n");
+    fprintf(stderr, "[emer_planner] Ctrl-C caught, exit process...\n");
     exit(-1);
 }
 
-int main(int argc, char** argv)
-{
-    rclcpp::init(argc, argv);
-    rclcpp::NodeOptions node_options;
-    node_options.automatically_declare_parameters_from_overrides(true);
-    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("test_xarm_planner_api_pose", node_options);
-    RCLCPP_INFO(node->get_logger(), "test_xarm_planner_api_pose start");
-
-    signal(SIGINT, exit_sig_handler);
-
-    int dof;
-    node->get_parameter_or("dof", dof, 7);
-    std::string robot_type;
-    node->get_parameter_or("robot_type", robot_type, std::string("xarm"));
-    std::string group_name = robot_type;
-    if (robot_type == "xarm" || robot_type == "lite")
-        group_name = robot_type + std::to_string(dof);
-    std::string prefix;
-    node->get_parameter_or("prefix", prefix, std::string(""));
-    if (prefix != "") {
-        group_name = prefix + group_name;
-    }
-
-    RCLCPP_INFO(node->get_logger(), "namespace: %s, group_name: %s", node->get_namespace(), group_name.c_str());
-
-    xarm_planner::XArmPlanner planner(node, group_name);
-
-    geometry_msgs::msg::Pose target_pose1;
-    target_pose1.position.x = 0.3;
-	target_pose1.position.y = -0.1;
-	target_pose1.position.z = 0.2;
-	target_pose1.orientation.x = 1;
-	target_pose1.orientation.y = 0;
-	target_pose1.orientation.z = 0;
-	target_pose1.orientation.w = 0;
-
-    geometry_msgs::msg::Pose target_pose2;
-    target_pose2.position.x = 0.3;
-	target_pose2.position.y = 0.1;
-	target_pose2.position.z = 0.2;
-	target_pose2.orientation.x = 1;
-	target_pose2.orientation.y = 0;
-	target_pose2.orientation.z = 0;
-	target_pose2.orientation.w = 0;
-
-    geometry_msgs::msg::Pose target_pose3;
-    target_pose3.position.x = 0.3;
-	target_pose3.position.y = 0.1;
-	target_pose3.position.z = 0.4;
-	target_pose3.orientation.x = 1;
-	target_pose3.orientation.y = 0;
-	target_pose3.orientation.z = 0;
-	target_pose3.orientation.w = 0;
-
-    geometry_msgs::msg::Pose target_pose4;
-    target_pose4.position.x = 0.3;
-	target_pose4.position.y = -0.1;
-	target_pose4.position.z = 0.4;
-	target_pose4.orientation.x = 1;
-	target_pose4.orientation.y = 0;
-	target_pose4.orientation.z = 0;
-	target_pose4.orientation.w = 0;
-
-    while (rclcpp::ok())
+class ShapeListener : public rclcpp::Node {
+public:
+    ShapeListener()
+    : Node("shape_listener")
     {
-        planner.planPoseTarget(target_pose1);
-        planner.executePath();
+        // Suscripción a los comandos (String)
+        sub_ = this->create_subscription<std_msgs::msg::String>(
+            "/xarm/shape_command",
+            rclcpp::QoS(10),
+            std::bind(&ShapeListener::on_command, this, std::placeholders::_1)
+        );
 
-        planner.planPoseTarget(target_pose2);
-        planner.executePath();
+        // Publisher de estado
+        status_pub_ = this->create_publisher<std_msgs::msg::String>(
+            "/xarm/shape_status", rclcpp::QoS(10)
+        );
 
-        planner.planPoseTarget(target_pose3);
-        planner.executePath();
-        
-        planner.planPoseTarget(target_pose4);
-        planner.executePath();
+        // Instanciamos el planner usando el constructor simple que sólo pide group_name.
+        // Esto evita problemas al pasar `this` (punteros compartidos).
+        planner_ = std::make_shared<xarm_planner::XArmPlanner>("xarm6");
     }
 
-    RCLCPP_INFO(node->get_logger(), "emer_planner over");
+    ~ShapeListener() {
+        // asegurar que el hilo termine antes de destruir el nodo
+        {
+            std::lock_guard<std::mutex> lk(worker_mutex_);
+            stop_requested_ = true;
+        }
+        if (worker_thread_.joinable()) worker_thread_.join();
+    }
+
+private:
+    // Callback de suscripción
+    void on_command(const std_msgs::msg::String::SharedPtr msg) {
+        std::string command = msg->data;
+
+        if (command == "stop") {
+            stop_requested_.store(true);
+            publish_status("Stop command received");
+            if (planner_) planner_->stopRobot();  // cancela ejecución
+            return;
+        }
+
+        // map command -> handler
+        std::function<void()> handler;
+        if (command == "circle") handler = [this]{ execute_circle(); };
+        else if (command == "square") handler = [this]{ execute_square(); };
+        else { publish_status("Unknown command: " + command); return; }
+
+        // ignorar si ya hay un comando ejecutándose
+        bool expected = false;
+        if (!worker_running_.compare_exchange_strong(expected, true)) {
+            publish_status("Robot busy, ignore command");
+            return;
+        }
+
+        stop_requested_.store(false);
+        publish_status("Starting: " + command);
+
+        // ejecutar en hilo
+        worker_thread_ = std::thread([this, handler, command]() {
+            bool success = false;
+            try {
+                handler();
+                success = true;
+            } catch (...) { /* log, que en este caso no tenemos */ }
+
+            if (stop_requested_.load()) publish_status(command + " cancelled by STOP");
+            else if (success) publish_status(command + " completed");
+            else publish_status(command + " failed");
+
+            worker_running_.store(false);
+        });
+        worker_thread_.detach();
+    }
+
+
+    void publish_status(const std::string &text) {
+        std_msgs::msg::String msg;
+        msg.data = text;
+        status_pub_->publish(msg);
+        RCLCPP_INFO(this->get_logger(), "%s", text.c_str());
+    }
+
+    void execute_circle() {
+        // Generar waypoints tipo círculo
+        std::vector<geometry_msgs::msg::Pose> waypoints;
+        double radius = 0.08;
+        int resolution = 24;
+        double center_x = 0.4, center_y = 0.0, z = 0.25;
+        for (int i = 0; i < resolution; ++i) {
+            double angle = 2.0 * M_PI * i / resolution;
+            waypoints.push_back(create_target_pose(
+                center_x + radius * std::cos(angle),
+                center_y + radius * std::sin(angle),
+                z, M_PI, 0.0, 0.0
+            ));
+        }
+        waypoints.push_back(waypoints[0]); // cerrar el círculo
+        execute_waypoints(waypoints);
+    }
+
+    void execute_square() {
+        std::vector<geometry_msgs::msg::Pose> waypoints;
+        double half = 0.06;
+        double center_x = 0.4, center_y = 0.0, z = 0.25;
+        std::vector<std::pair<double,double>> corners = {
+            {center_x - half, center_y - half},
+            {center_x + half, center_y - half},
+            {center_x + half, center_y + half},
+            {center_x - half, center_y + half}
+        };
+        for (const auto &c : corners) {
+            waypoints.push_back(create_target_pose(c.first, c.second, z, M_PI, 0.0, 0.0));
+        }
+        waypoints.push_back(waypoints[0]);
+        execute_waypoints(waypoints);
+    }
+
+    void execute_waypoints(const std::vector<geometry_msgs::msg::Pose> &waypoints) {
+        for (const auto &pose : waypoints) {
+            if (stop_requested_) break;
+
+            if (!planner_->planPoseTarget(pose)) {
+                RCLCPP_ERROR(this->get_logger(), "Planificación fallida para una pose del camino");
+                break;
+            }
+
+            if (stop_requested_) break; // revisión adicional
+            planner_->executePath();
+
+            if (stop_requested_) break; // revisión después de ejecutar
+        }
+        stop_requested_ = false;
+    }
+
+    std::shared_ptr<xarm_planner::XArmPlanner> planner_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
+
+    std::atomic<bool> worker_running_{false};
+    std::atomic<bool> stop_requested_{false};
+
+    std::thread worker_thread_;      // <--- hilo para ejecutar comandos
+    std::mutex worker_mutex_;        // <--- para proteger stop/join si quieres
+};
+
+int main(int argc, char **argv) {
+    rclcpp::init(argc, argv);
+    auto node = std::make_shared<ShapeListener>();
+    rclcpp::spin(node);
+    rclcpp::shutdown();
     return 0;
 }

@@ -183,7 +183,10 @@ class RobotPositionControlGrid:
             msg.position.y = pose_data['y']
             msg.position.z = pose_data['z']
             # Yaw, pitch y roll aún no se usan en la orientación
-
+            msg.orientation.x = pose_data['roll']
+            msg.orientation.y = pose_data['pitch']
+            msg.orientation.z = pose_data['yaw']
+            msg.orientation.w = 1.0
             # PUBLICAR pose al topic
             self.pose_pub.publish(msg)
 

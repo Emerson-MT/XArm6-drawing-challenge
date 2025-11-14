@@ -6,6 +6,9 @@
  ============================================================================*/
  
 #include "xarm_planner/xarm_planner.h"
+#include <std_srvs/srv/trigger.hpp>
+
+using namespace std::chrono_literals;
 
 namespace xarm_planner
 {
@@ -104,4 +107,22 @@ bool XArmPlanner::executePath(bool wait)
         RCLCPP_ERROR(node_->get_logger(), "executePath: execute failed, wait=%d, MoveItErrorCode=%d", wait, code.val);
     return success;
 }
+
+void XArmPlanner::stopRobot()
+{
+    // Cancela ejecución de MoveIt
+    move_group_->stop();
+
+    // Llama al servicio /xarm/stop del driver real
+    auto client = node_->create_client<std_srvs::srv::Trigger>("/xarm/stop");
+
+    if (!client->wait_for_service(1s)) {
+        RCLCPP_WARN(node_->get_logger(), "No stop service available!");
+        return;
+    }
+
+    auto req = std::make_shared<std_srvs::srv::Trigger::Request>();
+    auto result = client->async_send_request(req);
 }
+}
+

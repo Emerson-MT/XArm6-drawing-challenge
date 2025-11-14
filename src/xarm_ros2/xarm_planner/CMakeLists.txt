@@ -31,8 +31,10 @@ find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(moveit_msgs REQUIRED)
 find_package(xarm_msgs REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
-set(dependencies "rclcpp" "std_msgs" "geometry_msgs" "moveit_msgs" "xarm_msgs" "moveit")
+set(dependencies "rclcpp" "std_msgs" "geometry_msgs" "moveit_msgs" "xarm_msgs" "moveit" "std_srvs")
 
 include_directories(
   include
@@ -123,6 +125,8 @@ ament_target_dependencies(test_lite_gripper_realmove
 
 add_executable(emer_planner test/emer_planner.cpp)
 ament_target_dependencies(emer_planner
+  tf2
+  tf2_geometry_msgs
   ${dependencies}
 )
 target_link_libraries(emer_planner 

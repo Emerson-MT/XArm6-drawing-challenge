@@ -13,42 +13,46 @@ Este repositorio contiene los nodos, launch files y scripts necesarios para cont
 
 1. Clona el repositorio en tu workspace de ROS2:
 
-```bash
+```
 cd ~/dev_ws/src
 git clone <URL_DEL_REPOSITORIO>
+```
+
 Construye el workspace:
 
-bash
-Copy code
+```
 cd ~/dev_ws
 colcon build
 source install/setup.bash
-Uso
+```
 1️⃣ Lanzar el nodo del planificador xArm6
+
 Dependiendo de si quieres usar el simulador o el robot real:
 
 Simulado:
 
-bash
-Copy code
+```
 ros2 launch xarm_planner xarm6_planner_fake.launch.py add_gripper:=true
+```
+
 Robot real:
 
-bash
-Copy code
-ros2 launch xarm_planner xarm6_planner_realmove.launch.py robot_ip:=192.168.1.117 add_gripper:=true
+```
+ros2 launch xarm_planner xarm6_planner_realmove.launch.py robot_ip:=192.168.1.203 add_gripper:=true
+```
 Ajusta robot_ip según la IP de tu brazo real.
 
 2️⃣ Lanzar el nodo de planificación de emergencias / control adicional
-bash
-Copy code
+
+```
 ros2 launch xarm_planner emer_planner.launch.py dof:=6 robot_type:=xarm
+```
 Cambia dof y robot_type si usas otra configuración.
 
 3️⃣ Lanzar la interfaz gráfica
-bash
-Copy code
+```
 ros2 run xarm_gui gui_pose_publisher
+```
 Esto permite enviar poses al brazo mediante GUI.
 
 Notas importantes
@@ -71,19 +75,16 @@ Comandos disponibles por topic
 
 Mensajes de estado del brazo (ej. "circle completed", "Robot busy, ignore command")
 
-Ejemplo completo de ejecución
+Ejemplo completo de ejecución:
+
 Abre un terminal y lanza el nodo del planificador (simulado o real).
 
 Abre otro terminal y lanza el nodo emer_planner.
 
 Abre un tercer terminal y lanza la GUI:
-
-bash
-Copy code
+```
 ros2 run xarm_gui gui_pose_publisher
+```
 Envía comandos desde la GUI o mediante topics (circle, square, stop).
 
 Observa los mensajes de estado en /xarm/shape_status.
-
-css
-Copy code

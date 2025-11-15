@@ -55,27 +55,30 @@ ros2 run xarm_gui gui_pose_publisher
 ```
 Esto permite enviar poses al brazo mediante GUI.
 
-Notas importantes
-Todos los nodos ROS2 deben correr en el mismo workspace y con source install/setup.bash activado.
+## Notas importantes
 
-Si usas el brazo real, asegúrate de que no haya obstáculos y que el gripper esté correctamente configurado.
+- Todos los nodos ROS2 deben correr en el mismo workspace y con source install/setup.bash activado.
 
-El nodo emer_planner permite ejecutar trayectorias predefinidas (círculo, cuadrado, etc.) y puede recibir comandos stop para cancelar la ejecución.
+- Si usas el brazo real, asegúrate de que no haya obstáculos y que el gripper esté correctamente configurado.
 
-Comandos disponibles por topic
-/xarm/shape_command (std_msgs/msg/String):
+- El nodo emer_planner permite ejecutar trayectorias predefinidas (círculo, cuadrado, etc.) y puede recibir comandos stop para cancelar la ejecución.
 
-"circle" → Ejecuta trayectoria circular
+- Comandos disponibles por topic:
+  
+  /xarm/shape_command (std_msgs/msg/String):
+  
+  "circle" → Ejecuta trayectoria circular
+  
+  "square" → Ejecuta trayectoria cuadrada
+  
+  "stop" → Detiene la ejecución en curso
 
-"square" → Ejecuta trayectoria cuadrada
+  /xarm/shape_status (std_msgs/msg/String):
 
-"stop" → Detiene la ejecución en curso
+- Mensajes de estado del brazo (ej. "circle completed", "Robot busy, ignore command")
+  
 
-/xarm/shape_status (std_msgs/msg/String):
-
-Mensajes de estado del brazo (ej. "circle completed", "Robot busy, ignore command")
-
-Ejemplo completo de ejecución:
+## Resumen
 
 Abre un terminal y lanza el nodo del planificador (simulado o real).
 

@@ -56,81 +56,86 @@ public:
     : Node("shape_listener")
     {
         // Suscripción a los comandos (String)
-        sub_ = this->create_subscription<std_msgs::msg::String>(
+        this->sub_ = this->create_subscription<std_msgs::msg::String>(
             "/xarm/shape_command",
             rclcpp::QoS(10),
             std::bind(&ShapeListener::on_command, this, std::placeholders::_1)
         );
 
         // Publisher de estado
-        status_pub_ = this->create_publisher<std_msgs::msg::String>(
+        this->status_pub_ = this->create_publisher<std_msgs::msg::String>(
             "/xarm/shape_status", rclcpp::QoS(10)
         );
 
         // Instanciamos el planner usando el constructor simple que sólo pide group_name.
         // Esto evita problemas al pasar `this` (punteros compartidos).
-        planner_ = std::make_shared<xarm_planner::XArmPlanner>("xarm6");
+        this->planner_ = std::make_shared<xarm_planner::XArmPlanner>("xarm6");
     }
 
     ~ShapeListener() {
         // asegurar que el hilo termine antes de destruir el nodo
-        {
+        {   
+            // usamos lock_guard para evitar que otros hilos en proceso sigan modificando stop_requested_
             std::lock_guard<std::mutex> lk(worker_mutex_);
-            stop_requested_ = true;
+            this->stop_requested_.store(true);
         }
-        if (worker_thread_.joinable()) worker_thread_.join();
+        if (this->worker_thread_.joinable()) this->worker_thread_.join(); // Destruimos el hilo
     }
 
 private:
     // Callback de suscripción
     void on_command(const std_msgs::msg::String::SharedPtr msg) {
-        std::string command = msg->data;
+        std::string command = msg->data; // Obtenemos la data del mensaje
 
         if (command == "stop") {
-            stop_requested_.store(true);
+            this->stop_requested_.store(true); // Guardamos valor de true en stop_requested_
             publish_status("Stop command received");
-            if (planner_) planner_->stopRobot();  // cancela ejecución
+            if (this->planner_) this->planner_->stopRobot();  // cancela ejecución
             return;
         }
 
         // map command -> handler
-        std::function<void()> handler;
-        if (command == "circle") handler = [this]{ execute_circle(); };
-        else if (command == "square") handler = [this]{ execute_square(); };
-        else { publish_status("Unknown command: " + command); return; }
+        // this se pasa como captura porque es algo fijo. Opcional poner '()' porque no haya parámetros
+        std::function<void()> handler; // Creamos una variable que puede apuntar a cualquier función void
+        if (command == "circle") handler = [this]{ this->execute_circle(); }; // Asignamos una función lambda, capturando this
+        else if (command == "square") handler = [this]{ this->execute_square(); }; // Asignamos una función lambda, capturando this
+        else { publish_status("Unknown command: " + command); return; } // Comando no conocido
 
         // ignorar si ya hay un comando ejecutándose
         bool expected = false;
-        if (!worker_running_.compare_exchange_strong(expected, true)) {
+        // Hacemos el equivalente atómico de worker_running_ == expected ? true : false y asignamos true o false
+        if (!this->worker_running_.compare_exchange_strong(expected, true)) {
             publish_status("Robot busy, ignore command");
             return;
         }
 
-        stop_requested_.store(false);
-        publish_status("Starting: " + command);
+        this->stop_requested_.store(false); // Reseteamos stop_requested_ porque se realizará un nuevo comando
+        this->publish_status("Starting: " + command); // Publicación de status
 
         // ejecutar en hilo
-        worker_thread_ = std::thread([this, handler, command]() {
+        this->worker_thread_ = std::thread([this, handler, command]() { // Definimos el nuevo thread como un lambda
             bool success = false;
             try {
-                handler();
+                handler(); // Ejecutamos la función que tenga handler
                 success = true;
             } catch (...) { /* log, que en este caso no tenemos */ }
 
-            if (stop_requested_.load()) publish_status(command + " cancelled by STOP");
-            else if (success) publish_status(command + " completed");
-            else publish_status(command + " failed");
+            if (this->stop_requested_.load()) this->publish_status(command + " cancelled by STOP");
+            else if (success) this->publish_status(command + " completed");
+            else this->publish_status(command + " failed");
 
-            worker_running_.store(false);
+            this->worker_running_.store(false); // Indicamos que ya no está corriendo el hilo
         });
-        worker_thread_.detach();
+        // El main no espera a que termine el thread como si usáramos join, se vuelve independiente
+        this->worker_thread_.detach(); 
     }
 
 
     void publish_status(const std::string &text) {
         std_msgs::msg::String msg;
         msg.data = text;
-        status_pub_->publish(msg);
+        this->status_pub_->publish(msg);
+        // Mostramos mensajes tipo DEBUG, INFO, WARN, ERROR o FATAL. "%s" indica string. c_str porque se espera const char*
         RCLCPP_INFO(this->get_logger(), "%s", text.c_str());
     }
 
@@ -149,7 +154,7 @@ private:
             ));
         }
         waypoints.push_back(waypoints[0]); // cerrar el círculo
-        execute_waypoints(waypoints);
+        this->execute_waypoints(waypoints);
     }
 
     void execute_square() {
@@ -166,35 +171,36 @@ private:
             waypoints.push_back(create_target_pose(c.first, c.second, z, M_PI, 0.0, 0.0));
         }
         waypoints.push_back(waypoints[0]);
-        execute_waypoints(waypoints);
+        this->execute_waypoints(waypoints);
     }
 
     void execute_waypoints(const std::vector<geometry_msgs::msg::Pose> &waypoints) {
         for (const auto &pose : waypoints) {
-            if (stop_requested_) break;
+            if (this->stop_requested_.load()) break;
 
-            if (!planner_->planPoseTarget(pose)) {
+            if (!this->planner_->planPoseTarget(pose)) {
                 RCLCPP_ERROR(this->get_logger(), "Planificación fallida para una pose del camino");
                 break;
             }
 
-            if (stop_requested_) break; // revisión adicional
-            planner_->executePath();
+            if (this->stop_requested_.load()) break; // revisión adicional
+            this->planner_->executePath();
 
-            if (stop_requested_) break; // revisión después de ejecutar
+            if (this->stop_requested_.load()) break; // revisión después de ejecutar
         }
-        stop_requested_ = false;
+        stop_requested_.store(false);
     }
 
-    std::shared_ptr<xarm_planner::XArmPlanner> planner_;
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
+    std::shared_ptr<xarm_planner::XArmPlanner> planner_; // Planner principal que define el pose targey y ejecuta el path
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_; // Creamos un suscriptor para el nodo
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_; // Creamos un publicador para el nodo
 
-    std::atomic<bool> worker_running_{false};
-    std::atomic<bool> stop_requested_{false};
+    // atomic bool en lugar de solo bool para acceso seguro desde múltiples hilos
+    std::atomic<bool> worker_running_{false}; // Indica si el hilo principal sigue corriendo
+    std::atomic<bool> stop_requested_{false}; // Indica si se solicitó detenerse
 
-    std::thread worker_thread_;      // <--- hilo para ejecutar comandos
-    std::mutex worker_mutex_;        // <--- para proteger stop/join si quieres
+    std::thread worker_thread_;      // Hilo principal para ejecutar comandos
+    std::mutex worker_mutex_;        // Mutual exclusion para proteger variables de ser modificadas por otros hilos
 };
 
 int main(int argc, char **argv) {

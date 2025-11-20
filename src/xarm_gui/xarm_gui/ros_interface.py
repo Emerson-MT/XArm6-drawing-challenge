@@ -1,6 +1,7 @@
 import rclpy
 from geometry_msgs.msg import Pose
 from std_msgs.msg import String
+import math
 
 class RosInterface:
     def __init__(self, on_status_update=None):
@@ -18,21 +19,63 @@ class RosInterface:
     def _report(self, msg, color):
         if self.on_status:
             self.on_status(msg, color)
+    
+      # ----------------- quaternion helper -----------------
+    @staticmethod
+    def quaternion_from_euler(roll: float, pitch: float, yaw: float):
+        """
+        Return quaternion (x, y, z, w) from roll, pitch, yaw (radians).
+        """
+        cy = math.cos(yaw * 0.5)
+        sy = math.sin(yaw * 0.5)
+        cp = math.cos(pitch * 0.5)
+        sp = math.sin(pitch * 0.5)
+        cr = math.cos(roll * 0.5)
+        sr = math.sin(roll * 0.5)
+
+        w = cr * cp * cy + sr * sp * sy
+        x = sr * cp * cy - cr * sp * sy
+        y = cr * sp * cy + sr * cp * sy
+        z = cr * cp * sy - sr * sp * cy
+        return x, y, z, w
+
 
     # ---------------- POSE ----------------
     def send_pose(self, pose_dict):
-        msg = Pose()
-        msg.position.x = pose_dict["x"]
-        msg.position.y = pose_dict["y"]
-        msg.position.z = pose_dict["z"]
+        """
+        pose_dict expected keys: "x","y","z","roll","pitch","yaw".
+        roll/pitch/yaw may be in degrees or radians: if abs(val) > 2*pi we treat it as degrees.
+        """
+        # read translations
+        x = float(pose_dict.get("x", 0.0))
+        y = float(pose_dict.get("y", 0.0))
+        z = float(pose_dict.get("z", 0.0))
 
-        msg.orientation.x = pose_dict["roll"]
-        msg.orientation.y = pose_dict["pitch"]
-        msg.orientation.z = pose_dict["yaw"]
-        msg.orientation.w = 1.0
+        # read rotations
+        roll = float(pose_dict.get("roll", 0.0))
+        pitch = float(pose_dict.get("pitch", 0.0))
+        yaw = float(pose_dict.get("yaw", 0.0))
+
+        # Heuristic: if angles appear to be in degrees (large magnitude), convert to radians
+        if any(abs(a) > 2 * math.pi for a in (roll, pitch, yaw)):
+            roll = math.radians(roll)
+            pitch = math.radians(pitch)
+            yaw = math.radians(yaw)
+
+        qx, qy, qz, qw = self.quaternion_from_euler(roll, pitch, yaw)
+
+        msg = Pose()
+        msg.position.x = x
+        msg.position.y = y
+        msg.position.z = z
+
+        msg.orientation.x = qx
+        msg.orientation.y = qy
+        msg.orientation.z = qz
+        msg.orientation.w = qw
 
         self.pub_pose.publish(msg)
-        self._report("Pose sent.", "green")
+        self._report("Pose sent (with quaternion).", "green")
 
     # ---------------- COMMANDS -------------
     def send_command(self, cmd: str):

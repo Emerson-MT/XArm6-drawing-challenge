@@ -12,7 +12,7 @@ class RobotPositionControlGrid:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("XArm6 - Position and Orientation Control")
-        self.root.geometry("1400x900")
+        self.root.geometry("2600x1400")
 
         # GUI primero
         self._build_layout()
@@ -47,8 +47,8 @@ class RobotPositionControlGrid:
         self.drawing_canvas = DrawingPanel(
             master=self.root,
             on_send_path=self.send_drawing_path,      # ✔ GUI -> GUI
-            width=600,
-            height=600
+            width=1000,
+            height=1000
         )
         self.drawing_canvas.grid(row=1, column=3, rowspan=2, columnspan=5, padx=20, sticky='nsew')
 
@@ -65,17 +65,24 @@ class RobotPositionControlGrid:
     # ----------------------------------------------------------------------
     def _init_ros(self):
         """Crear RosInterface después que la UI está lista."""
-        self.ros = RosInterface(on_status_update=self._publish_status)
+        self.ros = RosInterface(
+            on_status_update=self._publish_status,
+            on_pose_update=self._update_pose 
+        )
 
     # ----------------------------------------------------------------------
     def _publish_status(self, msg, color):
         self.status_panel.update_status(msg, color)
+
+    def _update_pose(self, pose_text):
+        self.status_panel.update_pose(pose_text)
 
     # --------------------------- POSE --------------------------------------
     def set_pose(self):
         try:
             pose_values = {k: float(v.get()) for k, v in self.position_panel.entries.items()}
             self.ros.send_pose(pose_values)       # ✔ GUI → ROSInterface
+            self._publish_status("Pose sent", "green")
         except ValueError:
             self._publish_status("Invalid input numbers.", "red")
 

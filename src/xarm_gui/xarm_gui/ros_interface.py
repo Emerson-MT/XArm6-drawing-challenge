@@ -1,24 +1,51 @@
 import rclpy
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseArray, Pose
 from std_msgs.msg import String
 import math
 
 class RosInterface:
-    def __init__(self, on_status_update=None):
+    def __init__(self, on_status_update=None, on_pose_update=None):
         self.on_status = on_status_update
+        self.on_pose = on_pose_update
 
         rclpy.init(args=None)
         self.node = rclpy.create_node("xarm_gui_node")
 
         self.pub_pose = self.node.create_publisher(Pose, "/xarm/target_pose", 10)
         self.pub_cmd = self.node.create_publisher(String, "/xarm/shape_command", 10)
-        self.pub_path = self.node.create_publisher(Pose, "/xarm/drawing_path", 10)
+        self.pub_path = self.node.create_publisher(PoseArray, "/xarm/drawing_path", 10)
+
+        # ✔ Suscriptor al pose actual
+        self.sub_pose = self.node.create_subscription(
+            Pose,
+            "/xarm/current_pose",
+            self._pose_callback,
+            10
+        )
 
         self._report("ROS2 initialized.", "green")
 
     def _report(self, msg, color):
         if self.on_status:
             self.on_status(msg, color)
+    
+    def _pose_callback(self, msg: Pose):
+        if self.on_pose:
+            
+            x = msg.position.x
+            y = msg.position.y
+            z = msg.position.z
+            q = msg.orientation
+            
+            roll, pitch, yaw = self.euler_from_quaternion(q.x, q.y, q.z, q.w)
+
+            pose_text = (
+                f"x={x:.3f}  y={y:.3f}  z={z:.3f}  "
+                f"roll={math.degrees(roll):.1f}°  "
+                f"pitch={math.degrees(pitch):.1f}°  "
+                f"yaw={math.degrees(yaw):.1f}°"
+            )
+            self.on_pose(pose_text)
     
       # ----------------- quaternion helper -----------------
     @staticmethod
@@ -39,6 +66,25 @@ class RosInterface:
         z = cr * cp * sy - sr * sp * cy
         return x, y, z, w
 
+    @staticmethod
+    def euler_from_quaternion(x, y, z, w):
+        """
+        Convert quaternion to roll, pitch, yaw (radians)
+        """
+        t0 = +2.0 * (w * x + y * z)
+        t1 = +1.0 - 2.0 * (x * x + y * y)
+        roll = math.atan2(t0, t1)
+
+        t2 = +2.0 * (w * y - z * x)
+        t2 = +1.0 if t2 > +1.0 else t2
+        t2 = -1.0 if t2 < -1.0 else t2
+        pitch = math.asin(t2)
+
+        t3 = +2.0 * (w * z + x * y)
+        t4 = +1.0 - 2.0 * (y * y + z * z)
+        yaw = math.atan2(t3, t4)
+
+        return roll, pitch, yaw
 
     # ---------------- POSE ----------------
     def send_pose(self, pose_dict):
@@ -86,12 +132,18 @@ class RosInterface:
 
     # ---------------- PATH -----------------
     def send_path(self, points):
+
+        msg = PoseArray()
+        msg.header.frame_id = "world"
+
         for x, y in points:
-            msg = Pose()
-            msg.position.x = float(x)
-            msg.position.y = float(y)
-            msg.position.z = 0.0
-            msg.orientation.w = 1.0
-            self.pub_path.publish(msg)
+            p = Pose()
+            p.position.x = float(x)
+            p.position.y = float(y)
+            p.position.z = 0.0
+            p.orientation.w = 1.0
+            msg.poses.append(p)
+
+        self.pub_path.publish(msg)
 
         self._report(f"Sent {len(points)} path points.", "green")

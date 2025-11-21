@@ -19,6 +19,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
+#include <geometry_msgs/msg/pose_array.hpp>
 
 #include "xarm_msgs/srv/set_int16.hpp"
 
@@ -56,10 +57,22 @@ public:
     : Node("shape_listener")
     {
         // Suscripción a los comandos (String)
-        this->sub_ = this->create_subscription<std_msgs::msg::String>(
+        this->shape_sub_ = this->create_subscription<std_msgs::msg::String>(
             "/xarm/shape_command",
             rclcpp::QoS(10),
             std::bind(&ShapeListener::on_command, this, std::placeholders::_1)
+        );
+        // Suscripción a las trayectoris de dibujo
+        this->path_sub_ = this->create_subscription<geometry_msgs::msg::PoseArray>(
+            "/xarm/drawing_path",
+            rclcpp::QoS(10),
+            std::bind(&ShapeListener::path_callback, this, std::placeholders::_1)
+        );
+        // Suscripción a la pose fija indicada
+        this->pose_sub_ = this->create_subscription<geometry_msgs::msg::Pose>(
+            "/xarm/target_pose",
+            rclcpp::QoS(10),
+            std::bind(&ShapeListener::sub_pose_callback, this, std::placeholders::_1)
         );
 
         // Publisher de estado
@@ -67,6 +80,17 @@ public:
             "/xarm/shape_status", rclcpp::QoS(10)
         );
 
+        // Publiser de pose actual
+        pose_pub_ = this->create_publisher<geometry_msgs::msg::Pose>(
+            "/xarm/current_pose",
+            10
+        );
+        /*
+        timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(50),   // publica cada 50 ms (20 Hz)
+            std::bind(&ShapeListener::timer_callback, this)
+        );
+        */
         // Instanciamos el planner usando el constructor simple que sólo pide group_name.
         // Esto evita problemas al pasar `this` (punteros compartidos).
         this->planner_ = std::make_shared<xarm_planner::XArmPlanner>("xarm6");
@@ -130,7 +154,99 @@ private:
         this->worker_thread_.detach(); 
     }
 
+    void path_callback(const geometry_msgs::msg::PoseArray::SharedPtr msg)
+    {
+        if (msg->poses.empty()) {
+            publish_status("Received empty drawing path.");
+            return;
+        }
 
+        publish_status("Drawing path received (" +
+                    std::to_string(msg->poses.size()) +
+                    " points)");
+
+        bool expected = false;
+        if (!worker_running_.compare_exchange_strong(expected, true)) {
+            publish_status("Robot busy. Ignoring drawing path.");
+            return;
+        }
+
+        stop_requested_.store(false);
+
+        worker_thread_ = std::thread([this, msg]() {
+            bool success = true;
+
+            try {
+                publish_status("Executing drawing path (chunked)...");
+
+                // Convertir PoseArray → vector<geometry_msgs::msg::Pose>
+                std::vector<geometry_msgs::msg::Pose> waypoints(
+                    msg->poses.begin(), msg->poses.end()
+                );
+
+                // ⬅⬅⬅ **Aquí va lo importante**
+                this->execute_waypoints(waypoints);
+
+                if (stop_requested_.load()) {
+                    publish_status("Drawing path cancelled.");
+                    success = false;
+                }
+
+            } catch (...) {
+                success = false;
+            }
+
+            if (!success && !stop_requested_.load())
+                publish_status("Drawing path failed.");
+            else if (success)
+                publish_status("Drawing path completed.");
+
+            worker_running_.store(false);
+        });
+
+        worker_thread_.detach();
+    }
+
+    void sub_pose_callback(const geometry_msgs::msg::Pose& target_pose)
+    {
+        // 1) Crear un punto inicial "fake", cercano al target
+        geometry_msgs::msg::Pose fake_start = target_pose;
+
+        // Desplazamiento pequeño (1 a 2 cm)
+        fake_start.position.x -= 0.015;
+        fake_start.position.y -= 0.015;
+        fake_start.position.z -= 0.015;
+
+        // 2) Crear vector de waypoints
+        std::vector<geometry_msgs::msg::Pose> waypoints;
+        waypoints.reserve(2);
+        waypoints.push_back(fake_start);
+        waypoints.push_back(target_pose);
+
+        // 3) Planificar camino cartesiano
+        if (!this->planner_->planCartesianPath(waypoints)) {
+            publish_status("Cartesian planner failed!");
+            return;
+        }
+
+        // 4) Ejecutar camino
+        if (!this->planner_->executePath(true)) {
+            publish_status("Execution failed!");
+            return;
+        }
+
+        publish_status("Cartesian move executed.");
+    }
+
+    /*
+    void timer_callback()
+    {
+        geometry_msgs::msg::Pose pose = planner_->getCurrentPose();
+
+        // Publicar
+        pose_pub_->publish(pose);
+    }
+    */
     void publish_status(const std::string &text) {
         std_msgs::msg::String msg;
         msg.data = text;
@@ -138,7 +254,7 @@ private:
         // Mostramos mensajes tipo DEBUG, INFO, WARN, ERROR o FATAL. "%s" indica string. c_str porque se espera const char*
         RCLCPP_INFO(this->get_logger(), "%s", text.c_str());
     }
-
+    /*
     void execute_circle() {
         // Generar waypoints tipo círculo
         std::vector<geometry_msgs::msg::Pose> waypoints;
@@ -173,27 +289,156 @@ private:
         waypoints.push_back(waypoints[0]);
         this->execute_waypoints(waypoints);
     }
+    */
 
-    void execute_waypoints(const std::vector<geometry_msgs::msg::Pose> &waypoints) {
-        for (const auto &pose : waypoints) {
-            if (this->stop_requested_.load()) break;
+    void execute_circle() {
+        std::vector<geometry_msgs::msg::Pose> waypoints;
+        double radius = 0.08;
+        int resolution = 48;
 
-            if (!this->planner_->planPoseTarget(pose)) {
-                RCLCPP_ERROR(this->get_logger(), "Planificación fallida para una pose del camino");
+        // Distancia a la pizarra (hacia adelante)
+        double x = 0.45;
+
+        // Centro del círculo en el plano Y–Z
+        double center_y = 0.0;
+        double center_z = 0.25;
+
+        // Orientación para apuntar hacia la pizarra (frontal)
+        double roll  = 0.0;
+        double pitch = M_PI/2 - 0.15;
+        double yaw   = 0.0;
+
+        for (int i = 0; i < resolution; ++i) {
+            double angle = 2.0 * M_PI * i / resolution;
+
+            waypoints.push_back(create_target_pose(
+                x,                                            // X fijo
+                center_y + radius * std::cos(angle),          // Y
+                center_z + radius * std::sin(angle),          // Z
+                roll, pitch, yaw
+            ));
+        }
+
+        waypoints.push_back(waypoints[0]);
+        this->execute_waypoints(waypoints);
+    }
+
+    void execute_square() {
+        std::vector<geometry_msgs::msg::Pose> waypoints;
+        double half = 0.06;
+
+        // Pizarra fija frente al robot
+        double x = 0.45;
+
+        // Centro del cuadrado en Y–Z
+        double center_y = 0.01;
+        double center_z = 0.25;
+
+        double roll  = 0.0;
+        double pitch = M_PI/2 - 0.15;
+        double yaw   = 0.0;
+
+        std::vector<std::pair<double,double>> corners = {
+            {center_y - half, center_z - half},
+            {center_y + half, center_z - half},
+            {center_y + half, center_z + half},
+            {center_y - half, center_z + half}
+        };
+
+        for (const auto &c : corners) {
+            waypoints.push_back(create_target_pose(
+                x,       // X constante (distancia a la pizarra)
+                c.first, // Y
+                c.second,// Z
+                roll, pitch, yaw
+            ));
+        }
+
+        waypoints.push_back(waypoints[0]);
+        this->execute_waypoints(waypoints);
+    }
+
+    void execute_waypoints(const std::vector<geometry_msgs::msg::Pose> &waypoints)
+    {
+        if (waypoints.empty()) {
+            RCLCPP_WARN(this->get_logger(), "No hay waypoints para ejecutar");
+            return;
+        }
+
+        const size_t chunk_size = 40;  // Ajustable
+        size_t idx = 0;
+        const size_t total = waypoints.size();
+
+        // Vamos a llevar la pose actual "virtual", basada en los waypoints ejecutados
+        geometry_msgs::msg::Pose virtual_current_pose = waypoints.front();
+
+        while (idx < total) {
+            // Check de stop global
+            if (this->stop_requested_.load()) {
+                RCLCPP_WARN(this->get_logger(),
+                            "Ejecución interrumpida por stop_requested_ (antes de planificar chunk)");
+                if (this->planner_) this->planner_->stopRobot();
                 break;
             }
 
-            if (this->stop_requested_.load()) break; // revisión adicional
-            this->planner_->executePath();
+            // Definir el final del chunk
+            size_t end_idx = std::min(idx + chunk_size, total);
 
-            if (this->stop_requested_.load()) break; // revisión después de ejecutar
+            // Construir lista del chunk
+            std::vector<geometry_msgs::msg::Pose> chunk_waypoints;
+            chunk_waypoints.reserve(end_idx - idx + 1);
+
+            // Agregar la "pose actual virtual"
+            chunk_waypoints.push_back(virtual_current_pose);
+
+            // Agregar los puntos correspondientes del chunk
+            for (size_t j = idx; j < end_idx; ++j) {
+                chunk_waypoints.push_back(waypoints[j]);
+            }
+
+            // Planificar
+            if (!this->planner_->planCartesianPath(chunk_waypoints)) {
+                RCLCPP_ERROR(this->get_logger(),
+                            "Falló planCartesianPath en chunk comenzando en %zu", idx);
+                break;
+            }
+
+            // Ejecutar
+            if (!this->planner_->executePath(true)) {
+                RCLCPP_ERROR(this->get_logger(),
+                            "executePath devolvió error en chunk comenzando en %zu", idx);
+                if (this->planner_) this->planner_->stopRobot();
+                break;
+            }
+
+            // Actualizar la pose virtual actual al último waypoint del chunk
+            virtual_current_pose = waypoints[end_idx - 1];
+
+            // Pequeña pausa (opcional)
+            rclcpp::sleep_for(std::chrono::milliseconds(10));
+
+            // Avanzar
+            idx = end_idx;
+
+            // Si se pidió stop durante la ejecución
+            if (this->stop_requested_.load()) {
+                RCLCPP_WARN(this->get_logger(), "Stop solicitado después de ejecutar chunk, deteniendo.");
+                if (this->planner_) this->planner_->stopRobot();
+                break;
+            }
         }
+
         stop_requested_.store(false);
     }
 
+
     std::shared_ptr<xarm_planner::XArmPlanner> planner_; // Planner principal que define el pose targey y ejecuta el path
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_; // Creamos un suscriptor para el nodo
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_; // Creamos un publicador para el nodo
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr shape_sub_; // Suscripción a las formas
+    rclcpp::Subscription<geometry_msgs::msg::PoseArray>::SharedPtr path_sub_; // Suscripción a paths
+    rclcpp::Subscription<geometry_msgs::msg::Pose>::SharedPtr pose_sub_; 
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_; // Publicador de estatus
+    rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr pose_pub_;
+    rclcpp::TimerBase::SharedPtr timer_;
 
     // atomic bool en lugar de solo bool para acceso seguro desde múltiples hilos
     std::atomic<bool> worker_running_{false}; // Indica si el hilo principal sigue corriendo

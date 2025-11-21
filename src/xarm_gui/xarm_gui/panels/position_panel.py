@@ -36,5 +36,5 @@ class PositionControlPanel(ttk.LabelFrame):
         )
 
     def _call_set(self):
-        pose = {k: float(v.get()) for k, v in self.entries.items()}
-        self.on_set_pose(pose)
+        #pose = {k: float(v.get()) for k, v in self.entries.items()}
+        self.on_set_pose()

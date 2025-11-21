@@ -124,5 +124,12 @@ void XArmPlanner::stopRobot()
     auto req = std::make_shared<std_srvs::srv::Trigger::Request>();
     auto result = client->async_send_request(req);
 }
+
+geometry_msgs::msg::Pose XArmPlanner::getCurrentPose()
+{
+    // Obtiene la pose actual del end-effector desde MoveIt
+    geometry_msgs::msg::PoseStamped pose_stamped = move_group_->getCurrentPose();
+    return pose_stamped.pose;
+}
 }
 

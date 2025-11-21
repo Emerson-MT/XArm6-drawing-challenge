@@ -45,6 +45,8 @@ namespace xarm_planner
 
         void stopRobot();
 
+        geometry_msgs::msg::Pose getCurrentPose();
+
     private:
         void init(const std::string& group_name);
 

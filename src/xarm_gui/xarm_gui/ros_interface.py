@@ -109,7 +109,8 @@ class RosInterface:
 
         for x_canvas, y_canvas in points:
             # ----------------- Traslación al nuevo origen -----------------
-            x_t = x_canvas - canvas_width
+            #x_t = x_canvas - canvas_width
+            x_t = x_canvas
             y_t = canvas_height - y_canvas
 
             # ----------------- Rotación 90° antihoraria -----------------

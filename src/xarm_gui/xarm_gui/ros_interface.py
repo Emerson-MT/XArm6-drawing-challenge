@@ -85,36 +85,40 @@ class RosInterface:
         self._report(f"Command: {cmd}", "purple")
 
     # ---------------- PATH -----------------
-    def send_path(self, points):
+    def send_path(self, points, canvas_width=1000, canvas_height=1000):
         """
         points: lista de tuplas (x, y) desde el canvas
         Los ángulos roll, pitch, yaw se definen dentro de la función en radianes.
         Transformaciones aplicadas:
-        - Offset en x (0.5 m)
-        - Inversión de ejes: canvas y hacia abajo → brazo y hacia izquierda
+        - Sistema de coordenadas: origen en centro del límite inferior, x arriba, y izquierda
+        - Offset en x para alejar del robot
         - Altura fija z = 0.1
         """
         msg = PoseArray()
         msg.header.frame_id = "world"
 
-        factor = 0.001
-        x_offset = 0.5
+        factor = 0.0004  # Escala para 80 cm x 80 cm
+        x_offset = 0.2   # Offset en x final para alejar del robot
 
         # ----------------- Ángulos definidos internamente -----------------
         roll = 0.0
-        pitch = math.pi    # 180 grados
-        yaw = 0.0       # 0 grados
+        pitch = math.pi   # 180 grados
+        yaw = 0.0         # 0 grados
 
-        # ----------------- Convertir a quaternion -----------------
         qx, qy, qz, qw = self.quaternion_from_euler(roll, pitch, yaw)
 
         for x_canvas, y_canvas in points:
-            # ---------------- Transformaciones de coordenadas ----------------
-            x_tmp = x_canvas * factor
-            y_tmp = -y_canvas * factor
+            # ----------------- Traslación al nuevo origen -----------------
+            x_t = x_canvas - canvas_width
+            y_t = canvas_height - y_canvas
 
-            x_b = y_tmp + x_offset
-            y_b = x_tmp
+            # ----------------- Rotación 90° antihoraria -----------------
+            x_r = y_t
+            y_r = -x_t
+
+            # ----------------- Escalado y offset final -----------------
+            x_b = x_r * factor + x_offset
+            y_b = y_r * factor
             z_b = 0.1
 
             # ---------------- Crear pose ----------------

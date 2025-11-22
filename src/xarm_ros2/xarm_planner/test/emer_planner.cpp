@@ -9,7 +9,7 @@
 
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp> // para tf2::toMsg
-
+#include <geometry_msgs/msg/pose_array.hpp>
 #include <cmath>
 #include <memory>
 #include <vector>
@@ -56,10 +56,22 @@ public:
     : Node("shape_listener")
     {
         // Suscripción a los comandos (String)
-        this->sub_ = this->create_subscription<std_msgs::msg::String>(
+        this->shape_sub_ = this->create_subscription<std_msgs::msg::String>(
             "/xarm/shape_command",
             rclcpp::QoS(10),
             std::bind(&ShapeListener::on_command, this, std::placeholders::_1)
+        );
+        // Suscripción a las trayectoris de dibujo
+        this->path_sub_ = this->create_subscription<geometry_msgs::msg::PoseArray>(
+            "/xarm/drawing_path",
+            rclcpp::QoS(10),
+            std::bind(&ShapeListener::path_callback, this, std::placeholders::_1)
+        );
+
+        this->pose_sub_ = this->create_subscription<geometry_msgs::msg::Pose>(
+            "/xarm/target_pose",
+            rclcpp::QoS(10),
+            std::bind(&ShapeListener::sub_pose_callback, this, std::placeholders::_1)
         );
 
         // Publisher de estado
@@ -130,6 +142,71 @@ private:
         this->worker_thread_.detach(); 
     }
 
+    void path_callback(const geometry_msgs::msg::PoseArray::SharedPtr msg)
+    {
+        if (msg->poses.empty()) {
+            publish_status("Received empty drawing path.");
+            return;
+        }
+
+        publish_status("Drawing path received (" +
+                    std::to_string(msg->poses.size()) +
+                    " points)");
+
+        bool expected = false;
+        if (!worker_running_.compare_exchange_strong(expected, true)) {
+            publish_status("Robot busy. Ignoring drawing path.");
+            return;
+        }
+
+        stop_requested_.store(false);
+
+        worker_thread_ = std::thread([this, msg]() {
+            bool success = true;
+
+            try {
+                publish_status("Executing drawing path point by point...");
+
+                // Convertir PoseArray → vector<geometry_msgs::msg::Pose>
+                std::vector<geometry_msgs::msg::Pose> waypoints(
+                    msg->poses.begin(), msg->poses.end()
+                );
+
+                // Ejecutar cada punto con planPoseTarget
+                this->execute_waypoints(waypoints);
+
+                if (stop_requested_.load()) {
+                    publish_status("Drawing path cancelled.");
+                    success = false;
+                }
+
+            } catch (...) {
+                success = false;
+            }
+
+            if (!success && !stop_requested_.load())
+                publish_status("Drawing path failed.");
+            else if (success)
+                publish_status("Drawing path completed.");
+
+            worker_running_.store(false);
+        });
+
+        worker_thread_.detach();
+    }
+
+    void sub_pose_callback(const geometry_msgs::msg::Pose& pose)
+    {
+        
+        if (!this->planner_->planPoseTarget(pose)) {
+            RCLCPP_ERROR(this->get_logger(), "Planificación fallida para una pose del camino");
+        }
+
+        // 4) Ejecutar camino
+        if (!this->planner_->executePath(true)) {
+            publish_status("Execution failed!");
+        }
+    }
 
     void publish_status(const std::string &text) {
         std_msgs::msg::String msg;
@@ -191,8 +268,10 @@ private:
         stop_requested_.store(false);
     }
 
-    std::shared_ptr<xarm_planner::XArmPlanner> planner_; // Planner principal que define el pose targey y ejecuta el path
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_; // Creamos un suscriptor para el nodo
+    std::shared_ptr<xarm_planner::XArmPlanner> planner_; // Planner principal que define el pose target y ejecuta el path
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr shape_sub_; // Creamos un suscriptor para el nodo
+    rclcpp::Subscription<geometry_msgs::msg::PoseArray>::SharedPtr path_sub_; // Suscripción a paths
+    rclcpp::Subscription<geometry_msgs::msg::Pose>::SharedPtr pose_sub_;    
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_; // Creamos un publicador para el nodo
 
     // atomic bool en lugar de solo bool para acceso seguro desde múltiples hilos

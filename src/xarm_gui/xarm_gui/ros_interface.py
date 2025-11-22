@@ -1,5 +1,5 @@
 import rclpy
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseArray, Pose
 from std_msgs.msg import String
 import math
 
@@ -12,7 +12,7 @@ class RosInterface:
 
         self.pub_pose = self.node.create_publisher(Pose, "/xarm/target_pose", 10)
         self.pub_cmd = self.node.create_publisher(String, "/xarm/shape_command", 10)
-        self.pub_path = self.node.create_publisher(Pose, "/xarm/drawing_path", 10)
+        self.pub_path = self.node.create_publisher(PoseArray, "/xarm/drawing_path", 10)
 
         self._report("ROS2 initialized.", "green")
 
@@ -86,12 +86,50 @@ class RosInterface:
 
     # ---------------- PATH -----------------
     def send_path(self, points):
-        for x, y in points:
-            msg = Pose()
-            msg.position.x = float(x)
-            msg.position.y = float(y)
-            msg.position.z = 0.0
-            msg.orientation.w = 1.0
-            self.pub_path.publish(msg)
+        """
+        points: lista de tuplas (x, y) desde el canvas
+        Los ángulos roll, pitch, yaw se definen dentro de la función en radianes.
+        Transformaciones aplicadas:
+        - Offset en x (0.5 m)
+        - Inversión de ejes: canvas y hacia abajo → brazo y hacia izquierda
+        - Altura fija z = 0.1
+        """
+        msg = PoseArray()
+        msg.header.frame_id = "world"
 
-        self._report(f"Sent {len(points)} path points.", "green")
+        factor = 0.001
+        x_offset = 0.5
+
+        # ----------------- Ángulos definidos internamente -----------------
+        roll = 0.0
+        pitch = math.pi    # 180 grados
+        yaw = 0.0       # 0 grados
+
+        # ----------------- Convertir a quaternion -----------------
+        qx, qy, qz, qw = self.quaternion_from_euler(roll, pitch, yaw)
+
+        for x_canvas, y_canvas in points:
+            # ---------------- Transformaciones de coordenadas ----------------
+            x_tmp = x_canvas * factor
+            y_tmp = -y_canvas * factor
+
+            x_b = y_tmp + x_offset
+            y_b = x_tmp
+            z_b = 0.1
+
+            # ---------------- Crear pose ----------------
+            p = Pose()
+            p.position.x = x_b
+            p.position.y = y_b
+            p.position.z = z_b
+
+            p.orientation.x = qx
+            p.orientation.y = qy
+            p.orientation.z = qz
+            p.orientation.w = qw
+
+            msg.poses.append(p)
+
+        self.pub_path.publish(msg)
+        self._report(f"Sent {len(points)} path points with quaternion orientation.", "green")
+

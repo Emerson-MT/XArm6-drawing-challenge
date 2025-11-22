@@ -12,7 +12,7 @@ class RobotPositionControlGrid:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("XArm6 - Position and Orientation Control")
-        self.root.geometry("1400x900")
+        self.root.geometry("2600x1400")
 
         # GUI primero
         self._build_layout()
@@ -47,8 +47,8 @@ class RobotPositionControlGrid:
         self.drawing_canvas = DrawingPanel(
             master=self.root,
             on_send_path=self.send_drawing_path,      # ✔ GUI -> GUI
-            width=600,
-            height=600
+            width=1000,
+            height=1000
         )
         self.drawing_canvas.grid(row=1, column=3, rowspan=2, columnspan=5, padx=20, sticky='nsew')
 

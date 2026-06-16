@@ -8,7 +8,7 @@
   </tr>
   <tr>
     <td align="center">
-      <img src="images/implementation_2.png" width="450px" alt="Implementation"/>
+      <img src="images/implementation 2.png" width="450px" alt="Implementation"/>
       <br>
       <sup><b></b></sup>
     </td>

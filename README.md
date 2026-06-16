@@ -1,3 +1,18 @@
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="images/implementation.png" width="400px" alt="Implementation"/>
+      <br>
+      <sup><b></b></sup>
+    </td>
+    <td align="center">
+      <img src="images/implementation 2.png" width="400px" alt="Implementation"/>
+      <br>
+      <sup><b></b></sup>
+    </td>
+  </tr>
+</table>
+
 # XArm Planner ROS2 Package
 
 Este repositorio contiene los nodos, launch files y scripts necesarios para controlar un brazo **xArm6** tanto en simulación como en el robot real, junto con la interfaz gráfica de control.

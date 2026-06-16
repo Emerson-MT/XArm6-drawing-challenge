@@ -1,14 +1,14 @@
 <table align="center">
   <tr>
     <td align="center">
-      <img src="images/implementation.png" width="450px" alt="Implementation"/>
+      <img src="images/implementation.png" width="600px" alt="Implementation"/>
       <br>
       <sup><b></b></sup>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="images/implementation 2.png" width="450px" alt="Implementation"/>
+      <img src="images/implementation 2.png" width="600px" alt="Implementation"/>
       <br>
       <sup><b></b></sup>
     </td>

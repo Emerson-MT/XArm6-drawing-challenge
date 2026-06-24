@@ -102,7 +102,7 @@ class RosInterface:
 
         # ----------------- Ángulos definidos internamente -----------------
         roll = 0.0
-        pitch = math.pi   # 180 grados
+        pitch = math.pi / 2   # 90 grados
         yaw = 0.0         # 0 grados
 
         qx, qy, qz, qw = self.quaternion_from_euler(roll, pitch, yaw)
